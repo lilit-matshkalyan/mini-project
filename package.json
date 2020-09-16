@@ -1,0 +1,59 @@
+{
+  "name": "mini-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prod": "pm2 start index.js --name api",
+    "restart-start": "pm2-runtime restart api",
+    "dev": "nodemon index.js",
+    "gen-layers": "node codeUtils/generateLayers/index.js",
+    "migrate": "sequelize db:migrate",
+    "unmigrate": "sequelize db:migrate:undo:all",
+    "seed-up": "sequelize db:seed:all",
+    "seed-down": "sequelize db:seed:undo:all",
+    "lintfix": "eslint --fix .",
+    "lint": "eslint ."
+  },
+  "author": {
+    "name": "Lilit Matshkalyan",
+    "email": "lil.matshkalyan@gmail.com",
+    "role": "Developer",
+    "developers": [
+      {
+        "name": "Lilit Matshkalyan",
+        "email": "lil.matshkalyan@gmail.com"
+      }
+    ]
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@koa/cors": "^2.2.2",
+    "dotenv": "^6.0.0",
+    "fastest-validator": "^0.6.19",
+    "koa": "^2.13.0",
+    "koa-body": "^4.2.0",
+    "koa-compose": "^4.1.0",
+    "koa-respond": "^2.1.0",
+    "koa-router": "^7.4.0",
+    "lodash": "^4.17.20",
+    "mysql2": "^2.1.0",
+    "sequelize": "^5.18.0",
+    "uuid": "^3.4.0",
+    "validator": "^10.8.0",
+    "winston": "^3.3.3",
+    "winston-elasticsearch": "^0.7.13"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "husky": "^1.3.1",
+    "nodemon": "^1.18.11"
+  }
+}
