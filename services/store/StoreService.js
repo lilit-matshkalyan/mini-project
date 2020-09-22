@@ -98,11 +98,7 @@ class StoreService {
      * @returns {Promise.<*>}
      */
   static async getById({ id }) {
-    const result = await Store.findOne({
-      where: {
-        id
-      }
-    });
+    const result = await Store.findByPk(id);
 
     return result;
   }

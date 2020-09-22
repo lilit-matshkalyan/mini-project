@@ -31,12 +31,6 @@ router.put('/:id', async (ctx) => {
   return ctx.accepted(result);
 });
 
-// router.put('/', async (ctx) => {
-//   const result = await ProductController.upsert({ data: { ...ctx.request.body } });
-//
-//   return ctx.created(result);
-// });
-
 router.delete('/:id', async (ctx) => {
   const { id } = ctx.params;
 

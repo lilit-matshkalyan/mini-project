@@ -36,17 +36,6 @@ class ProductController {
 
   /**
      *
-     * @param data
-     * @returns {Promise<*>}
-     */
-  static async upsert({ data }) {
-    const result = await ProductService.upsert({ data });
-
-    return result;
-  }
-
-  /**
-     *
      * @param id
      * @returns {Promise<void>}
      */

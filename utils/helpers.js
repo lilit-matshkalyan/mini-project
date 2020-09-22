@@ -1,5 +1,5 @@
 /**
- @TODO  change exports. style to Abstract Class or any singletone export
+ @TODO change exports. style to Abstract Class or any singletone export
  *  there is an issue related reuse this functions inside this module, needed context specification with this style
  */
 
@@ -35,33 +35,11 @@ exports.arrangeSequelizeInterfaceArrayData = ({ data }) => ({
   total: parseInt(data[0].total, 10)
 });
 
-
 /**
- * customUpsert
- * @param model - model
- * @param where - where condition
- * @param updateData - data to update
- * @param createDate - data to create
- * @param updateData  extends the the to the end of current month
- * @returns {Object} - changed string
+ *
+ * @param obj
+ * @returns {*}
  */
-exports.customUpsert = async ({
-  model, where, updateData, createData
-}) => {
-  const result = await model
-    .findOne({ where })
-    .then((obj) => {
-      // update
-      if (obj) {
-        return obj.update(updateData);
-      }
-      // insert
-      return model.create(createData);
-    });
-
-  return result;
-};
-
 exports.cleanEmptyValues = (obj) => {
   const newObj = Object.create(null);
   Object.keys(obj).forEach((key) => {
@@ -80,4 +58,15 @@ exports.cleanEmptyValues = (obj) => {
     return null;
   }
   return newObj;
+};
+/**
+ *
+ * @param string
+ * @param replacement
+ * @returns {string|XML|*|void}
+ */
+exports.replaceSpaceInString = ({ string, replacement }) => {
+  const newString = string.replace(/\s/g, `${replacement}`);
+
+  return newString;
 };

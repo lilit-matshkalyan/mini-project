@@ -31,6 +31,7 @@
     "@koa/cors": "^2.2.2",
     "dotenv": "^6.0.0",
     "fastest-validator": "^0.6.19",
+    "jimp": "^0.16.1",
     "koa": "^2.13.0",
     "koa-body": "^4.2.0",
     "koa-compose": "^4.1.0",
