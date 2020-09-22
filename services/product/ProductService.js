@@ -1,10 +1,8 @@
-const jimp = require('jimp');
-const uuid = require('uuid');
-
 const { Product, Sequelize } = require('../../data/models');
-const { PAGINATION } = require('../../utils/constants');
-const { arrangeSequelizeInterfaceData, replaceSpaceInString, cleanEmptyValues } = require('../../utils/helpers');
+const { PAGINATION, IMAGE_SHAPES } = require('../../utils/constants');
+const { arrangeSequelizeInterfaceData, cleanEmptyValues } = require('../../utils/helpers');
 const StoreService = require('../store/StoreService');
+const ImageProcessingService = require('../imageProcessing/ImageProcessingService');
 
 const { Op } = Sequelize;
 
@@ -23,44 +21,18 @@ class ProductService {
     const store = await StoreService.getById({ id: storeId });
     const { watermarkImage: storeWatermarkImage } = store;
 
-    const finalImage = await ProductService.mergeImages({ images: [productImage, storeWatermarkImage], productName: title });
+    const finalImage = await ImageProcessingService.mergeImages({ images: [productImage, storeWatermarkImage], productName: title });
 
     const result = await Product.create({
       storeId, title, image: finalImage
     }, { transaction });
 
+    ImageProcessingService.resizeAndWriteImage({ image: productImage, imageName: finalImage, shapes: IMAGE_SHAPES.SMALL });
+    ImageProcessingService.resizeAndWriteImage({ image: finalImage, imageName: finalImage, shapes: IMAGE_SHAPES.MEDIUM });
+    ImageProcessingService.resizeAndWriteImage({ image: finalImage, imageName: finalImage, shapes: IMAGE_SHAPES.LARGE });
+
 
     return result;
-  }
-
-  /**
-     *
-     * @param images
-     * @param productName
-     * @returns {Promise.<string>}
-     */
-  static async mergeImages({ images, productName }) {
-    const projectPath = process.env.PWD;
-
-    const imagePromise = jimp.read(`${projectPath}/${images[0]}`);
-    const image = await imagePromise;
-
-    const watermarks = await Promise.all(
-      images.slice(1, images.length).map(img => jimp.read(`${projectPath}${img}`))
-    );
-
-
-    watermarks.forEach((watermark) => {
-      image.blit(watermark, 0, 0);
-    });
-
-    const imageId = uuid.v4();
-
-    const imagePath = `images/${imageId}-${replaceSpaceInString({ string: productName, replacement: '-' })}.png`;
-    image.write(imagePath);
-
-
-    return imagePath;
   }
 
   /**
@@ -77,9 +49,10 @@ class ProductService {
       const store = await StoreService.getById({ id: storeId });
       const { watermarkImage: storeWatermarkImage } = store;
 
-      finalImage = await ProductService.mergeImages({ images: [productImage, storeWatermarkImage], productName: title });
+      finalImage = await ImageProcessingService.mergeImages({ images: [productImage, storeWatermarkImage], productName: title });
     }
     const result = await product.update(cleanEmptyValues({ storeId, image: finalImage, title }));
+
 
     return result;
   }

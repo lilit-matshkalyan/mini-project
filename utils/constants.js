@@ -21,9 +21,28 @@ const ORDER = {
   DESC: 'DESC'
 };
 
+const IMAGE_SHAPES = {
+  SMALL: {
+    size: 'small',
+    width: 120,
+    height: 120
+  },
+  MEDIUM: {
+    size: 'medium',
+    width: 640,
+    height: 480
+  },
+  LARGE: {
+    size: 'large',
+    width: 1024,
+    height: 768
+  }
+};
+
 
 module.exports = {
   HTTP_STATUS_METHODS,
+  IMAGE_SHAPES,
   PAGINATION,
   ORDER
 };
