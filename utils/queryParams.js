@@ -1,25 +1,24 @@
-const isString = require('lodash/isString');
 const _ = require('lodash');
-const { PAGINATION } = require('./constants');
+const { PAGINATION, ORDER } = require('./constants');
+
 
 const parseQueryParams = (params) => {
   let {
-    order, filter, offset, limit
+    order, sort, offset, limit
   } = params;
-  const { search = '', active } = params;
-  filter = filter || {};
-  filter = isString(filter) ? JSON.parse(filter) : filter;
+  const { search } = params;
   offset = offset ? _.toNumber(offset) : PAGINATION.OFFSET;
   limit = limit ? _.toNumber(limit) : PAGINATION.LIMIT;
 
-  order = order || { key: 'createdAt', bool: true };
-  order = isString(order) ? JSON.parse(order) : order;
+  order = order || ORDER.DESC;
+  sort = sort || 'createdAt';
+
   const final = {
-    filter,
+    search,
     offset,
     limit,
     order,
-    active
+    sort
   };
   final.search = search;
   return final;

@@ -1,8 +1,11 @@
 const Router = require('koa-router');
+
 const {
   RESOURCE_NOT_FOUND
 } = require('../../utils/errorDetails');
 const validator = require('../../modules/validator/index');
+const parseQueryParams = require('../../utils/queryParams');
+
 const {
   createStoreRequestBodySchema, updateStoreRequestBodySchema
 } = require('../../modules/validator/validationSchemas');
@@ -22,7 +25,7 @@ router.post('/', async (ctx) => {
   return ctx.created(result);
 });
 
-router.put('/:id', async (ctx) => {
+router.patch('/:id', async (ctx) => {
   await validator.customValidation(ctx.request.body, updateStoreRequestBodySchema);
   const { id } = ctx.params;
 
@@ -46,7 +49,9 @@ router.delete('/:id', async (ctx) => {
 });
 
 router.get('/', async (ctx) => {
-  const result = await StoreController.get({ queryParams: { ...ctx.request.query } });
+  const queryParams = parseQueryParams(ctx.request.query);
+
+  const result = await StoreController.get({ queryParams /* : { ...ctx.request.query } */ });
 
   return ctx.ok(result);
 });

@@ -1,5 +1,5 @@
 const { Product, Sequelize } = require('../../data/models');
-const { PAGINATION, IMAGE_SHAPES } = require('../../utils/constants');
+const { PAGINATION, IMAGE_SHAPES, ORDER } = require('../../utils/constants');
 const { arrangeSequelizeInterfaceData, cleanEmptyValues } = require('../../utils/helpers');
 const StoreService = require('../store/StoreService');
 const ImageProcessingService = require('../imageProcessing/ImageProcessingService');
@@ -53,6 +53,8 @@ class ProductService {
     }
     const result = await product.update(cleanEmptyValues({ storeId, image: finalImage, title }));
 
+    // TODO functionality when updating store
+
 
     return result;
   }
@@ -77,26 +79,24 @@ class ProductService {
      */
   static async get({
     queryParams: {
-      limit = PAGINATION.LIMIT, offset = PAGINATION.OFFSET, search, order, sort
+      limit = PAGINATION.LIMIT, offset = PAGINATION.OFFSET, order = ORDER.DESC, sort = 'createdAt', search
     }
   }) {
-    const sortOrder = [];
     let whereCondition = {};
-    if (order && sort) {
-      sortOrder.push([sort, order]);
-    }
+
     if (search) {
       whereCondition = {
         title: {
-          [Op.iLike]: `%${search}%`
+          [Op.like]: `%${search}%`
         }
       };
     }
+
     let result = await Product.findAndCountAll({
       where: whereCondition,
       limit,
       offset,
-      order: sortOrder.length ? sortOrder : [['createdAt', 'DESC']]
+      order: [[sort, order]]
     });
     result = arrangeSequelizeInterfaceData({ data: result });
 

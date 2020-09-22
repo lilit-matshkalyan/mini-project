@@ -1,5 +1,5 @@
 const { Store, Sequelize } = require('../../data/models');
-const { PAGINATION } = require('../../utils/constants');
+const { PAGINATION, ORDER } = require('../../utils/constants');
 const { arrangeSequelizeInterfaceData } = require('../../utils/helpers');
 
 const { Op } = Sequelize;
@@ -56,36 +56,34 @@ class StoreService {
   }
 
   /**
-   *
-   * @param limit
-   * @param offset
-   * @param search
-   * @param order
-   * @param sort
-   * @returns {Promise<{total: *, data: *}>}
-   */
+     *
+     * @param limit
+     * @param offset
+     * @param order
+     * @param sort
+     * @param search
+     * @returns {Promise.<*>}
+     */
   static async get({
     queryParams: {
-      limit = PAGINATION.LIMIT, offset = PAGINATION.OFFSET, search, order, sort
+      limit = PAGINATION.LIMIT, offset = PAGINATION.OFFSET, order = ORDER.DESC, sort = 'createdAt', search
     }
   }) {
-    const sortOrder = [];
     let whereCondition = {};
-    if (order && sort) {
-      sortOrder.push([sort, order]);
-    }
+
     if (search) {
       whereCondition = {
         title: {
-          [Op.iLike]: `%${search}%`
+          [Op.like]: `%${search}%`
         }
       };
     }
+
     let result = await Store.findAndCountAll({
       where: whereCondition,
       limit,
       offset,
-      order: sortOrder.length ? sortOrder : [['createdAt', 'DESC']]
+      order: [[sort, order]]
     });
     result = arrangeSequelizeInterfaceData({ data: result });
 

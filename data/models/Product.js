@@ -27,7 +27,14 @@ module.exports = (sequelize, DataTypes) => {
       storeId: {
         required: true,
         allowNull: false,
-        type: DataTypes.UUID
+        type: DataTypes.UUID,
+        references: {
+          model: {
+            tableName: STORE.RELATION
+          },
+          key: 'id'
+        },
+        onDelete: 'CASCADE' // TODO error
       },
       title: {
         required: true,
