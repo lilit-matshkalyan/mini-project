@@ -9,11 +9,13 @@ const router = new Router({
 
 const storeRouter = require('./store');
 const productRoutes = require('./product');
+const awsRoutes = require('./aws');
 // .import
 
 
 router.use(storeRouter.routes());
 router.use(productRoutes.routes());
+router.use(awsRoutes.routes());
 // .use
 
 
