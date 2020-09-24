@@ -43,7 +43,6 @@ class AWSService {
       QueueUrl: SQS_QUEUE_URL
     };
 
-
     sqs.sendMessage(params, (err, data) => {
       if (err) {
         console.log('Error', err);
