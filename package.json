@@ -29,6 +29,7 @@
   "license": "ISC",
   "dependencies": {
     "@koa/cors": "^2.2.2",
+    "aws-sdk": "^2.759.0",
     "dotenv": "^6.0.0",
     "fastest-validator": "^0.6.19",
     "jimp": "^0.16.1",

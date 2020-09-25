@@ -107,3 +107,4 @@ dist
 # dotenv environment variables file
 .idea
 package-lock.json
+.DS_Store

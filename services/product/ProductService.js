@@ -36,47 +36,41 @@ class ProductService {
   }
 
   /**
-     *
-     * @param data
-     * @param product
-     * @returns {Promise.<*>}
-     */
-  static async update({ data, product }) {
-    const { storeId, image: productImage, title } = data;
+   *
+   * @param data
+   * @param id
+   * @returns {Promise<*>}
+   */
+  static async update({ data, id }) {
+    const { storeId, image, title } = data;
 
-    let finalImage;
-    if (productImage) {
-      const store = await StoreService.getById({ id: storeId });
-      const { watermarkImage: storeWatermarkImage } = store;
-
-      finalImage = await ImageProcessingService.mergeImages({ images: [productImage, storeWatermarkImage], productName: title });
-    }
-    const result = await product.update(cleanEmptyValues({ storeId, image: finalImage, title }));
-
-    // TODO functionality when updating store
-
+    const result = await Product.update(
+      cleanEmptyValues({
+        storeId, image, title
+      }), { where: { id } }
+    );
 
     return result;
   }
 
   /**
-     *
-     * @param id
-     * @returns {Promise<void>}
-     */
+   *
+   * @param id
+   * @returns {Promise<void>}
+   */
   static async delete({ id }) {
     await Product.destroy({ where: { id } });
   }
 
   /**
-     *
-     * @param limit
-     * @param offset
-     * @param search
-     * @param order
-     * @param sort
-     * @returns {Promise<{total: *, data: *}>}
-     */
+   *
+   * @param limit
+   * @param offset
+   * @param order
+   * @param sort
+   * @param search
+   * @returns {Promise<{total: *, data: Honeycode.ResultRows | number | M[] | SQLResultSetRowList | HTMLCollectionOf<HTMLTableRowElement> | string}>}
+   */
   static async get({
     queryParams: {
       limit = PAGINATION.LIMIT, offset = PAGINATION.OFFSET, order = ORDER.DESC, sort = 'createdAt', search
@@ -104,12 +98,26 @@ class ProductService {
   }
 
   /**
-     *
-     * @param id
-     * @returns {Promise.<*>}
-     */
+   *
+   * @param id
+   * @returns {Promise<any>}
+   */
   static async getById({ id }) {
     const result = await Product.findByPk(id);
+
+    return result;
+  }
+
+  /**
+   *
+   * @param storeId
+   * @returns {Promise<any>}
+   */
+  static async getProductsByStoreId({ storeId }) {
+    const result = await Product.findAndCountAll({
+      attributes: ['id', 'image', 'title'],
+      where: { storeId }
+    });
 
     return result;
   }

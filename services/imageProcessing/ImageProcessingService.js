@@ -1,7 +1,7 @@
 const jimp = require('jimp');
 const uuid = require('uuid');
 
-const { IMAGES_PATH } = process.env;
+const { IMAGES_PATH, PWD: projectPath } = process.env;
 
 const { replaceSpaceInString } = require('../../utils/helpers');
 
@@ -11,14 +11,12 @@ const { replaceSpaceInString } = require('../../utils/helpers');
  */
 class ImageProcessingService {
   /**
-     *
-     * @param images
-     * @param productName
-     * @returns {Promise.<string>}
-     */
+   *
+   * @param images
+   * @param productName
+   * @returns {Promise<string>}
+   */
   static async mergeImages({ images, productName }) {
-    const projectPath = process.env.PWD;
-
     const imagePromise = jimp.read(`${projectPath}/${images[0]}`);
     const image = await imagePromise;
 
@@ -40,12 +38,11 @@ class ImageProcessingService {
   }
 
   /**
-     *
-     * @param image
-     * @param imageName
-     * @param shapes
-     * @returns {Promise.<void>}
-     */
+   *
+   * @param image
+   * @param imageName
+   * @param shapes
+   */
   static resizeAndWriteImage({ image, imageName, shapes }) {
     const { width, size } = shapes;
     const position = IMAGES_PATH.length;
