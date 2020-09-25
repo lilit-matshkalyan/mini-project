@@ -2,7 +2,9 @@ const {
   RESOURCE_NOT_FOUND
 } = require('../../utils/errorDetails');
 const { ResourceNotFoundError } = require('../../modules/exceptions');
+const StoreService = require('../../services/store/StoreService');
 const ProductService = require('../../services/product/ProductService');
+const ImageProcessingService = require('../../services/imageProcessing/ImageProcessingService');
 
 /**
  * Class ProductController
@@ -20,16 +22,28 @@ class ProductController {
   }
 
   /**
-     *
-     * @param data
-     * @param id
-     * @returns {Promise.<*>}
-     */
+   *
+   * @param data
+   * @param id
+   * @returns {Promise<*>}
+   */
   static async update({ data, id }) {
     const product = await ProductService.getById({ id });
     if (!product) throw new ResourceNotFoundError(RESOURCE_NOT_FOUND);
+    const { image, title } = data;
+    const { title: oldTitle, storeId } = product;
 
-    const result = await ProductService.update({ data, product });
+    if (image) {
+      const store = await StoreService.getById({ id: storeId });
+
+      const { watermarkImage: storeWatermarkImage } = store;
+
+      const finalImage = await ImageProcessingService.mergeImages({ images: [image, storeWatermarkImage], productName: title || oldTitle });
+      data.image = finalImage; // eslint-disable-line
+      // TODO also resize image
+    }
+
+    const result = await ProductService.update({ data, id });
 
     return result;
   }
